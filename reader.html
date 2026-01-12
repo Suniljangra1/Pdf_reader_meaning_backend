@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Reader</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .hard-word {
+            background-color: yellow;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #222;
+            color: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<h2>PDF Reader</h2>
+
+<div id="content"></div>
+
+<script>
+async function loadPdfText() {
+    const response = await fetch("http://127.0.0.1:9000/read-pdf-text");
+    const pages = await response.json();
+
+    const container = document.getElementById("content");
+
+    pages.forEach(page => {
+        const div = document.createElement("div");
+        div.innerHTML = `<h3>Page ${page.page}</h3><p>${page.html}</p>`;
+        container.appendChild(div);
+    });
+}
+
+document.addEventListener("mouseover", async (e) => {
+    if (!e.target.classList.contains("hard-word")) return;
+
+    const word = e.target.dataset.word;
+
+    const res = await fetch(`http://127.0.0.1:9000/meaning?word=${word}`);
+    const data = await res.json();
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "tooltip";
+    tooltip.innerText = data.meaning;
+
+    tooltip.style.top = (e.pageY + 10) + "px";
+    tooltip.style.left = (e.pageX + 10) + "px";
+
+    document.body.appendChild(tooltip);
+
+    e.target.addEventListener("mouseleave", () => tooltip.remove(), { once: true });
+});
+
+loadPdfText();
+</script>
+
+</body>
+</html>
