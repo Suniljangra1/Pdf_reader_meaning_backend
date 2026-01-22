@@ -40,3 +40,7 @@ Flutter – Frontend / UI
 If you want, I can now expand this into a full professional GitHub README with Installation, Usage, Screenshots, and Future Scope sections. It will look ready for publishing.
 
 Do you want me to do that next?
+C:\pdf\pdf_reader> venv\Scripts\activate
+(venv) C:\pdf\pdf_reader>
+python -m uvicorn app:app --host 0.0.0.0 --port 9000 --reload
+
